@@ -7,10 +7,11 @@ var client = new kafka.Client(conf.zkString);
 var consumer = new kafka.HighLevelConsumer(client, conf.payloads.matches);
 
 module.exports = function (io) {
-  consumer.on('message', onMatchMessage);
+  consumer.on('message', onConsumerMessage);
+  consumer.on('error', onConsumerError);
   io.sockets.on('connection', onConnection);
 
-  function onMatchMessage(message) {
+  function onConsumerMessage(message) {
     var json_message = JSON.parse(message.value);
     var keywords = json_message.keywords;
     console.log (JSON.stringify (keywords));
@@ -18,6 +19,10 @@ module.exports = function (io) {
       io.to(keywords[i]).emit(keywords[i], json_message);
     }
   };
+
+  function onConsumerError(err) {
+      console.log(err);
+  }
 
   function onConnection(socket) {
     socket.on('join', function onJoin(roomName, callback) {
