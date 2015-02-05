@@ -1,5 +1,25 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+	div#sidebar
+		ul
+			each val in subscriptions
+				li
+					a(href='#')= val
+			li
+				input#numb(
+					type="text"
+				)
+				input#subButton(
+					type="submit"
+					value="Add Subscription"
+				)
+
+	div#content
+		ul#contentList
+			li
+				p#demo
+
+	script(
+		src = "/javascripts/tweets.js"
+	)
