@@ -1,6 +1,25 @@
 module.exports = {
-  zkString: 'hostname:port',
-  payloads: {
-    matches: [{ topic: 'topic_name' }]
+
+  client: {
+    connectionString: 'hostname:port',
+    clientId: 'kafka-node-client',
+    zkOptions: {
+      sessionTimeout: 30000,
+      spinDelay: 1000,
+      retries: 10
+    }
+  },
+
+  matchConsumer: {
+    payloads: [
+      {
+        topic: 'matches'
+      }
+    ]
+  },
+
+  alertProducer: {
+    topic: 'alerts'
   }
+
 }
