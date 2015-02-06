@@ -1,14 +1,9 @@
 "use strict";
 
-var conf = require('./config/kafka');
-var kafka = require('kafka-node');
-
-var client = new kafka.Client(conf.zkString);
-var consumer = new kafka.HighLevelConsumer(client, conf.payloads.matches);
+var bask = require('./models/bask.js');
 
 module.exports = function (io) {
-  consumer.on('message', onConsumerMessage);
-  consumer.on('error', onConsumerError);
+  bask.matches.on('message', onConsumerMessage);
   io.sockets.on('connection', onConnection);
 
   function onConsumerMessage(message) {
@@ -20,13 +15,16 @@ module.exports = function (io) {
     }
   };
 
-  function onConsumerError(err) {
-      console.log(err);
-  }
-
   function onConnection(socket) {
-    socket.on('join', function onJoin(roomName, callback) {
-      socket.join(roomName);
+    socket.on('join', function onJoin(room, callback) {
+      socket.join(room, onError);
+    });
+    socket.on('addAlert', function onAddAlert(alert, callback) {
+      bask.addAlert(alert, onError);
     });
   };
+
+  function onError(err) {
+    if (err) console.log(err);
+  }
 }
