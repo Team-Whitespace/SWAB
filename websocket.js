@@ -11,7 +11,7 @@ module.exports = function (io) {
     var keywords = json_message.keywords;
     console.log (JSON.stringify (keywords));
     keywords.forEach(function(keyword) {
-        io.to(keyword).emit(keyword, json_message);
+      io.to(keyword).emit(keyword, json_message);
     });
   };
 
