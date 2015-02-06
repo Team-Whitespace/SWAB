@@ -10,9 +10,9 @@ module.exports = function (io) {
     var json_message = JSON.parse(message.value);
     var keywords = json_message.keywords;
     console.log (JSON.stringify (keywords));
-    for (var i = 0; i < keywords.length; i++) {
-      io.to(keywords[i]).emit(keywords[i], json_message);
-    }
+    keywords.forEach(function(keyword) {
+        io.to(keyword).emit(keyword, json_message);
+    });
   };
 
   function onConnection(socket) {
