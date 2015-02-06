@@ -2,23 +2,19 @@ extends layout
 
 block content
     div#sidebar
-        ul
+        input#alertSub(
+            type="text"
+        )
+        input#subButton(
+            type="submit"
+            value="Add Subscription"
+        )
+        ul#alertList
             each val in subscriptions
                 li
                     a(href='#')= val
-            li
-                input#numb(
-                    type="text"
-                )
-                input#subButton(
-                    type="submit"
-                    value="Add Subscription"
-                )
 
     div#content
-        ul#contentList
-            li
-                p#demo
 
     script(
         src = "/javascripts/tweets.js"

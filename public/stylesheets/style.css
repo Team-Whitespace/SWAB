@@ -48,8 +48,8 @@ table {
 }
 
 /*
-Sidebar
-*/
+ * Sidebar
+ */
 #sidebar {
     background: #F1F1F1;
     height: 100%;
@@ -66,15 +66,14 @@ Sidebar
 }
 
 #content {
+    margin: 20px;
     height: 100%;
     padding: 15px;
 }
 
-#content li {
-    padding: 5px 0;
+#pictureAndName,
+#tweetContent {
+    padding: 15px;
+    float: left;
 }
 
-#content li a {
-    color: #333;
-    text-decoration: none;
-}
