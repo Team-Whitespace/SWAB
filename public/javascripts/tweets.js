@@ -2,10 +2,7 @@
 
 var socket = io.connect(location.protocol + '//' + location.host);
 
-getTweets('oil');
-getTweets('china');
-getTweets('obama');
-getTweets('billion');
+if (page.alert) getTweets(page.alert);
 
 /*displayTweet({
   tweet: {

@@ -2,20 +2,21 @@ extends layout
 
 block content
     div#sidebar
-        input#alertSub(
-            type="text"
-        )
+
+        input#alertSub(type="text")
         input#subButton(
             type="submit"
             value="Add Subscription"
         )
+
         ul#alertList
             each val in subscriptions
                 li
-                    a(href='#')= val
+                    a(href='#{val}')= val
 
     div#content
 
-    script(
-        src = "/javascripts/tweets.js"
-    )
+    script.
+        var page = { alert: "#{alert}" }
+
+    script(src="/javascripts/tweets.js")

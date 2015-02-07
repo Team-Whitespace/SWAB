@@ -1,9 +1,14 @@
 var express = require('express');
+var alerts = require('../models/alerts.js');
+
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { subscriptions: ["china", "obama", "oil"] })
+router.get(/^\/([a-zA-Z0-9]*)$/, function(req, res, next) {
+  res.render('index', {
+    alert: req.params[0],
+    subscriptions: alerts.getAlerts ()
+  })
 });
 
 module.exports = router;
