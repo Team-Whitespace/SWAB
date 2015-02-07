@@ -1,9 +1,10 @@
 "use strict";
 
-var bask = require('./models/bask.js');
+var matches = require('./models/matches.js');
+var users = require('./models/users.js');
 
 module.exports = function (io) {
-  bask.matches.on('message', onConsumerMessage);
+  matches.matches.on('message', onConsumerMessage);
   io.sockets.on('connection', onConnection);
 
   function onConsumerMessage(message) {
@@ -16,11 +17,34 @@ module.exports = function (io) {
   };
 
   function onConnection(socket) {
-    socket.on('join', function onJoin(room, callback) {
-      socket.join(room, onError);
+    socket.on('join', function onJoin(room) {
+        socket.join(room, onError);
     });
-    socket.on('addAlert', function onAddAlert(alert, callback) {
-      bask.addAlert(alert, onError);
+
+    socket.on('addAlert', function onAddAlert(alert) {
+      matches.addAlert(alert, onAddMatchAlert);
+
+      function onAddMatchAlert(err, data) {
+        if (err) failedToAddAlert (err);
+        else users.addAlert(alert, onAddUserAlert);
+      }
+
+      function onAddUserAlert(err) {
+        if (err) failedToAddAlert (err);
+        else socket.emit('addedAlert', alertMessage(alert, true));
+      }
+
+      function failedToAddAlert(err) {
+        console.log(err);
+        socket.emit('addedAlert', alertMessage(alert, false));
+      }
+
+      function alertMessage(alert, success) {
+          return {
+            success: success,
+            alert: alert
+          }
+      }
     });
   };
 

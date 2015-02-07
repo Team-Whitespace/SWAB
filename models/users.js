@@ -1,8 +1,6 @@
 "use strict";
 
-var sampleData = require('../data/sampletweets.json')
-
-function addAlert(alert) {
+function addAlert(alert, callback) {
 }
 
 function getAlerts() {
@@ -13,7 +11,7 @@ function removeAlert(alert) {
 }
 
 module.exports = {
-  addAlerts: addAlert,
+  addAlert: addAlert,
   getAlerts: getAlerts,
   removeAlert: removeAlert
 }

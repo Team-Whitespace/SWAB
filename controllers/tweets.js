@@ -1,5 +1,5 @@
 var express = require('express');
-var alerts = require('../models/alerts.js');
+var alerts = require('../models/users.js');
 
 var router = express.Router();
 

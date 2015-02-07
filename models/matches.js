@@ -13,12 +13,12 @@ alertProducer.on ('error', onError);
 matchConsumer.on ('error', onError);
 
 function addAlert(alert, callback) {
-  alertProducer.send([new producerPayload (conf.alertProducer.topic, alert)], callback);
+  alertProducer.send([new producerPayload (conf.alertProducer.topic, alert, 'add')], callback);
 }
 
-function producerPayload(topic, alert) {
+function producerPayload(topic, alert, action) {
   this.topic = topic;
-  this.messages = JSON.stringify ({ action: 'add', alert: alert });
+  this.messages = JSON.stringify ({ action: action, alert: alert });
 }
 
 function onError(err) {
