@@ -4,7 +4,8 @@ var socket = io.connect(location.protocol + '//' + location.host);
 
 if (page.alert) getTweets(page.alert);
 
-/*displayTweet({
+/*
+displayTweet({
   tweet: {
     text: "Just put anything that is just a bit longer than \"just put anything\"",
     created_at: "Thu Nov 27 00:45:02 +0000 2014",
@@ -16,18 +17,20 @@ if (page.alert) getTweets(page.alert);
       url: "http://twitter.com/WabAlmighty"
     }
   }
-});*/
+});
+*/
 
 document.getElementById("subButton").addEventListener("click", sentAlert);
 
 function sentAlert() {
   var text = document.getElementById('alertSub').value;
+  var alertList = document.getElementById('alertList');
   socket.emit('addAlert', text);
-  document.getElementById('alertList').innerHTML =
+  alertList.innerHTML =
     '<li>' +
       '<a href="#" >' + text + '</a>' +
     '</li>' +
-    document.getElementById('alertList').innerHTML;
+    alertList.innerHTML;
 }
 
 
@@ -37,7 +40,8 @@ function getTweets(tweet) {
 }
 
 function displayTweet(data) {
-  document.getElementById('content').innerHTML =
+  var content = document.getElementById('content');
+  content.insertAdjacentHTML ('afterbegin',
     '<div class="tweet" id="tweet-' + data.tweet.id_str + '">' +
       '<div class="tweetContent">'+
         '<p>' + data.tweet.text + '</p>' +
@@ -57,6 +61,6 @@ function displayTweet(data) {
         '</div>' +
       '</div>' +
       '<div style="clear:both"></div>' +
-    '</div>' +
-    document.getElementById('content').innerHTML;
+    '</div>'
+  );
 };
