@@ -28,7 +28,7 @@ function sentAlert() {
   socket.emit('addAlert', text);
   alertList.innerHTML =
     '<li>' +
-      '<a href="#" >' + text + '</a>' +
+      '<a href="/' + text + '" >' + text + '</a>' +
     '</li>' +
     alertList.innerHTML;
 }
