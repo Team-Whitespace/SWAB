@@ -6,7 +6,7 @@ var conf = require('../config/kafka');
 var client = new kafka.Client(conf.client.connectionString, conf.client.clientId,
   conf.client.zkOptions);
 
-var matchConsumer = new kafka.HighLevelConsumer(client, conf.matchConsumer.payloads);
+var matchConsumer = new kafka.HighLevelConsumer(client, conf.matchConsumer.payloads, conf.matchConsumer.options);
 var alertProducer = new kafka.HighLevelProducer(client);
 
 alertProducer.on ('error', onError);

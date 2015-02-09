@@ -15,7 +15,10 @@ module.exports = {
       {
         topic: 'matches'
       }
-    ]
+    ],
+    options: {
+      groupId: 'match-group'
+    }
   },
 
   alertProducer: {
