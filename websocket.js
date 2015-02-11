@@ -25,12 +25,12 @@ module.exports = function (io) {
       matches.addAlert(alert, onAddMatchAlert);
 
       function onAddMatchAlert(err, data) {
-        if (err) failedToAddAlert (err);
+        if (err) failedToAddAlert(err);
         else users.addAlert(alert, onAddUserAlert);
       }
 
       function onAddUserAlert(err) {
-        if (err) failedToAddAlert (err);
+        if (err) failedToAddAlert(err);
         else socket.emit('addedAlert', alertMessage(alert, true));
       }
 
