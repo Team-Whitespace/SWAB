@@ -4,22 +4,6 @@ var socket = io.connect(location.protocol + '//' + location.host);
 
 if (page.alert) getTweets(page.alert);
 
-/*
-displayTweet({
-  tweet: {
-    text: "Just put anything that is just a bit longer than \"just put anything\"",
-    created_at: "Thu Nov 27 00:45:02 +0000 2014",
-    id_str: "537769029864521729",
-    user: {
-      profile_image_url: "https://gp5.googleusercontent.com/-2RWmMfU0JOI/AAAAAAAAAAI/AAAAAAAAAAA/y6e_4IOxTU0/s48-c-k-no/photo.jpg",
-      name: "William Blakey",
-      screen_name: "WabAlmighty",
-      url: "http://twitter.com/WabAlmighty"
-    }
-  }
-});
-*/
-
 document.getElementById("subButton").addEventListener("click", sentAlert);
 
 function sentAlert() {
@@ -40,8 +24,30 @@ function getTweets(tweet) {
 }
 
 function displayTweet(data) {
+  var count = 0;
   var content = document.getElementById('content');
-  content.insertAdjacentHTML ('afterbegin',
+  var match = data.matches.filter(function isCurrentAlert(obj) {
+    return obj.queryid === page.alert;
+  })[0];
+
+  if (!match.positions) return;
+
+  match.positions.text.forEach(function highlightTerms(position) {
+    data.tweet.text = insertString(data.tweet.text, "<mark>", position.startOffset);
+    data.tweet.text = insertString(data.tweet.text, "</mark>", position.endOffset);
+  });
+
+  insertTweet(content, data);
+
+  function insertString(str, part, index) {
+    var result = str.slice(0, index + count) + part + str.slice(index + count);
+    count += part.length;
+    return result;
+  }
+}
+
+function insertTweet(content, data) {
+  content.insertAdjacentHTML('afterbegin',
     '<div class="tweet" id="tweet-' + data.tweet.id_str + '">' +
       '<div class="tweetContent">'+
         '<p>' + data.tweet.text + '</p>' +
@@ -63,4 +69,4 @@ function displayTweet(data) {
       '<div style="clear:both"></div>' +
     '</div>'
   );
-};
+}
