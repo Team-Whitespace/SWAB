@@ -8,11 +8,10 @@ module.exports = function (io) {
   io.sockets.on('connection', onConnection);
 
   function onConsumerMessage(message) {
-    var json_message = JSON.parse(message.value);
-    var keywords = json_message.keywords;
-    console.log (JSON.stringify (keywords));
-    keywords.forEach(function(keyword) {
-      io.to(keyword).emit(keyword, json_message);
+    var message = JSON.parse(message.value);
+    console.log(JSON.stringify(message.matches));
+    message.matches.forEach(function(match) {
+      io.to(match.queryid).emit(match.queryid, message);
     });
   };
 
