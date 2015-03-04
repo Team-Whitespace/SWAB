@@ -28,8 +28,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 mongoose.connect(mongoConf.connectString, function (err) {
     if (err) console.log(err);
-    app.use('/', controllers.tweets);
 });
+
+app.use('/', controllers.tweets);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
