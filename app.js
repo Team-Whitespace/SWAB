@@ -4,6 +4,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var mongoConf = require('./config/mongo');
+
 
 var controllers = {
     tweets: require('./controllers/tweets')
@@ -22,6 +25,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+mongoose.connect(mongoConf.connectString, function (err) {
+    if (err) console.log(err);
+});
 
 app.use('/', controllers.tweets);
 
