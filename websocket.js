@@ -9,7 +9,6 @@ module.exports = function (io) {
 
   function onConsumerMessage(message) {
     var message = JSON.parse(message.value);
-    console.log(JSON.stringify(message.matches));
     message.matches.forEach(function(match) {
       io.to(match.queryid).emit(match.queryid, message);
     });
@@ -24,8 +23,8 @@ module.exports = function (io) {
       matches.addAlert(alert, onAddMatchAlert);
 
       function onAddMatchAlert(err, data) {
-        if (err) failedToAddAlert(err);
-        else users.addAlert(alert, onAddUserAlert);
+        if (err || socket.request.session.passport.user === undefined) failedToAddAlert(err);
+        else users.update({_id: socket.request.session.passport.user}, {$addToSet: {subscriptions: alert}}, onAddUserAlert);
       }
 
       function onAddUserAlert(err) {
@@ -39,10 +38,10 @@ module.exports = function (io) {
       }
 
       function alertMessage(alert, success) {
-          return {
-            success: success,
-            alert: alert
-          }
+        return {
+          success: success,
+          alert: alert
+        }
       }
     });
   };

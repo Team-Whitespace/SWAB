@@ -1,22 +1,40 @@
 extends layout
 
 block content
+
     div#sidebar
 
-        input#alertSub(type="text")
-        input#subButton(
-            type="submit"
-            value="Add Subscription"
-        )
+        if user
+            | Hi #{user.firstname}!
+            a(href="/auth/logout") Logout
 
-        ul#alertList
-            each val in subscriptions
-                li
-                    a(href='#{val}')= val
+            input#alertSub(type="text")
+            input#subButton(
+                type="submit"
+                value="Add Subscription"
+            )
+
+            ul#alertList
+                each val in user.subscriptions
+                    li
+                        a(href='#{val}')= val
+        else
+            form(action="/auth/openid" method="post")
+                div
+                    label OpenID:
+                    input(type="text" name="openid_identifier")
+                    br
+                div
+                    input(type="submit" value="Sign in")
+
 
     div#content
 
-    script.
-        var page = { alert: "#{alert}" }
+    if user
+        script.
+            var page = { alert: "#{alert}" }
+    else
+        script.
+            var page = {}
 
     script(src="/javascripts/tweets.js")
