@@ -13,11 +13,11 @@ function sentAlert() {
   var text = document.getElementById('alertSub').value;
   var alertList = document.getElementById('alertList');
   socket.emit('addAlert', text);
-  alertList.innerHTML =
+  alertList.insertAdjacentHTML('beforeend',
     '<li>' +
       '<a href="/' + encodeURIComponent(text) + '" >' + text + '</a>' +
-    '</li>' +
-    alertList.innerHTML;
+    '</li>'
+  );
 }
 
 
