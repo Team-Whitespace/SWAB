@@ -17,7 +17,7 @@ block content
             ul#alertList
                 each val in user.subscriptions
                     li
-                        a(href='#{val}')= val
+                        a(href='/#{encodeURIComponent(val)}')= val
 
             a#togglePause(href="#") Pause
         else
