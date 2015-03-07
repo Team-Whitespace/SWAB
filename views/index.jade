@@ -18,6 +18,8 @@ block content
                 each val in user.subscriptions
                     li
                         a(href='#{val}')= val
+
+            a#togglePause(href="#") Pause
         else
             form(action="/auth/openid" method="post")
                 div

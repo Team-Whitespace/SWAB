@@ -1,10 +1,13 @@
 "use strict"
 
 var socket = io.connect(location.protocol + '//' + location.host);
+var paused = false;
+var content = document.getElementById('content');
 
 if (page.alert) getTweets(page.alert);
 
 document.getElementById("subButton").addEventListener("click", sentAlert);
+document.getElementById("togglePause").addEventListener("click", togglePauseTweets);
 
 function sentAlert() {
   var text = document.getElementById('alertSub').value;
@@ -25,7 +28,6 @@ function getTweets(tweet) {
 
 function displayTweet(data) {
   var count = 0;
-  var content = document.getElementById('content');
   var match = data.matches.filter(function isCurrentAlert(obj) {
     return obj.queryid === page.alert;
   })[0];
@@ -47,8 +49,10 @@ function displayTweet(data) {
 }
 
 function insertTweet(content, data) {
+  var style = '';
+  if (paused) style = ' style = "display: none"';
   content.insertAdjacentHTML('afterbegin',
-    '<div class="tweet" id="tweet-' + data.tweet.id_str + '">' +
+    '<div' + style + ' class="tweet" id="tweet-' + data.tweet.id_str + '">' +
       '<div class="tweetContent">'+
         '<p>' + data.tweet.text + '</p>' +
         '<p>' + data.tweet.created_at + '</p>' +
@@ -69,4 +73,18 @@ function insertTweet(content, data) {
       '<div style="clear:both"></div>' +
     '</div>'
   );
+}
+
+function togglePauseTweets(e) {
+  paused = !paused;
+
+  if (!paused) {
+    var tweets = content.getElementsByClassName('tweet')
+      for (var i = 0; i < tweets.length; i++) {
+        tweets.item(i).style.display = 'block';
+      }
+  }
+
+  e.stopPropagation();
+  e.preventDefault();
 }
