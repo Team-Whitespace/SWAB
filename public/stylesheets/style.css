@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800);
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic);
 
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
@@ -52,11 +52,15 @@ table {
 /*
  * Main
  */
+html, body {
+    height: 100%;
+}
+
 body {
-    background: #E7E7E7;
-    font-family: 'Open Sans', helvetica, arial, sans-serif;
+    font-family: 'Source Sans Pro', 'Open Sans', helvetica, arial, sans-serif;
     line-height: 1.5;
-    font-size: 1em;
+    font-size: 1.1rem;
+    background: #F5F5F5;
 }
 
 a {
@@ -67,23 +71,91 @@ a {
  * Sidebar
  */
 #sidebar {
-    background: #F1F1F1;
+    background: #333;
     height: 100%;
-    padding: 15px;
 }
 
 #sidebar li {
     padding: 5px 0;
+    margin: 5px 0;
+}
+
+#sidebar li.active {
+    background: rgba(255, 255, 255, 0.06);
 }
 
 #sidebar li a {
-    color: #333;
+    color: #EEE;
 }
 
+/*
+ * Buttons/Inputs
+ */
+.button {
+    background: #56919B;
+    cursor: pointer;
+    color: #FFF;
+    text-shadow: 0 1px rgba(0,0,0,0.4);
+    padding: 10px 20px;
+}
+
+input.button[type=submit] {
+    border: 0;
+    height: 32px;
+}
+
+input.entry[type=text] {
+    padding: 0 10px;
+    height: 30px;
+    border: solid 1px #CCC;
+    border-right: 0;
+}
+
+/*
+ * Content
+ */
+
 #content {
-    margin: 20px;
+    height: calc(100% - 20px);
+    width: calc(100% - 320px);
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+
+/*
+ * Board
+ */
+
+.pane {
+    width: 320px;
+    height: calc(100% - 20px);
+    float: left;
+    background: #FFF;
+    border: solid 1px #E2E2E2;
+    margin: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    font-size: 1rem;
+}
+
+.pane .pane-head {
+    background: #F8F9FA;
+}
+
+.pane h2 {
+    font-size: 1.4rem;
+    padding: 10px 20px;
+    display: inline-block;
+}
+
+.pane .tweet-container {
+    padding: 0 10px;
+    overflow-y: auto;
     height: 100%;
-    padding: 15px;
 }
 
 /*
@@ -91,27 +163,27 @@ a {
  */
 
 .tweet {
-    max-width: 800px;
-    background: #FFF;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     animation: fadein 2s;
-    -webkit-animation: fadein 2s;
-    box-shadow: 0px  1px 0px rgba(0,0,0,0.1),
-                1px  0px 0px rgba(0,0,0,0.05),
-                -1px 0px 0px rgba(0,0,0,0.05);
+    -webkit-animation: fadein 0.5s;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
 
+.tweet mark {
+    border-radius: 5px;
+    background: #56919B;
+    color: #FFF;i
+    text-shadow: 0 1px rgba(0,0,0,0.4);
+    padding: 2px 6px;
 }
 
 .tweet .tweetContent {
-    padding: 15px;
-    color: #878787;
-    font-weight: 300;
+    color: #333;
+    font-weight: 200;
 }
 
 .tweet .tweetInfo {
-    background: #F7F7F7;
     overflow: hidden;
-    padding: 15px;
 }
 
 .tweet .tweetInfo > div {
@@ -124,12 +196,119 @@ a {
 }
 
 .tweet .tweetInfo .tweetRealName a {
-    font-size: 0.9em;
+    font-size: 0.9rem;
 }
 
 .tweet .tweetInfo .tweetScreenName a {
-    font-size: 0.8em;
+    font-size: 0.8rem;
     color: #666;
+}
+
+/*
+ * Lightbox
+ */
+.lightbox {
+    position: absolute;
+    z-index: 99;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.3);
+    /*display: flex;*/
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.lightbox .lightbox-inner {
+    margin: 0 auto;
+    background: #FFF;
+    padding: 20px;
+
+}
+
+.lightbox .lightbox-inner input {
+    float: left;
+}
+
+/*
+ * Other
+ */
+
+.clearBoth {
+    clear: both;
+}
+
+@media (min-width: 800px) {
+    #sidebar {
+        width: 300px;
+        float: left;
+        position: fixed;
+        display: flex;
+        flex-flow: column;
+    }
+
+    #sidebar #addBoard {
+        padding: 20px;
+        overflow: hidden;
+        float: left;
+        width: 300px;
+    }
+
+    #sidebar #addBoard #boardNameText {
+        float: left;
+        height: 32px;
+        border: 0;
+        padding: 0 10px;
+        border-right: 0;
+        width: 199px;
+        background: rgba(255,255,255,0.2);
+        color: #CCC;
+    }
+
+    #sidebar #addBoard #boardNameSubmit.button {
+        float: left;
+        overflow: hidden;
+        width: 40px;
+        font-size: 25px;
+        font-weight: bold;
+        padding: 0;
+    }
+
+    #sidebar ul {
+        overflow-y: auto;
+        flex: 2;
+    }
+
+    #sidebar li a {
+        display: block;
+        padding: 0 20px;
+    }
+
+    #sidebar #sidebar-foot {
+        padding: 20px;
+        color: #AAA;
+    }
+
+    #sidebar #sidebar-foot a {
+        display: block;
+        float: right;
+        width: 50px;
+        color: #56919B;
+    }
+
+    #content {
+        margin: 0 0 0 300px;
+        padding: 10px;
+        float: left;
+    }
+
+    #content #addSubContainer {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+    }
 }
 
 @keyframes fadein {

@@ -2,39 +2,51 @@ extends layout
 
 block content
 
+    if user
+        - var currentBoard = user.boards.filter(function (o) { return o.name === board })
+        - if (currentBoard) currentBoard = currentBoard[0]
+
     div#sidebar
 
         if user
-            | Hi #{user.firstname}!
-            a(href="/auth/logout") Logout
+            div#addBoard
+                input#boardNameText(type="text" placeholder="Add Board")
+                input#boardNameSubmit.button(type="submit" value="+")
 
-            input#alertSub(type="text")
-            input#subButton(
-                type="submit"
-                value="Add Subscription"
-            )
+            ul#boardList
+                each val in user.boards
+                    li(class= board === val.name ? "active" : "" data-board="#{val.name}")
+                        a(href='/#{encodeURIComponent(val.name)}')= val.name
 
-            ul#alertList
-                each val in user.subscriptions
-                    li
-                        a(href='/#{encodeURIComponent(val)}')= val
-
-            a#togglePause(href="#") Pause
+            div#sidebar-foot
+                if user.firstname
+                    | Hi #{user.firstname}!
+                else
+                    | Howdy!
+                a(href="/auth/logout") Logout
         else
             form(action="/auth/openid" method="post")
                 div
                     label OpenID:
                     input(type="text" name="openid_identifier")
-                    br
-                div
                     input(type="submit" value="Sign in")
 
+    if user && currentBoard
+        div#content
 
-    div#content
+            div#addSubContainer
+                a.button#addNewSubscription(href="#") Add Subscription
 
-    if user
+        div#add-subscription-lightbox.lightbox
+            div.lightbox-inner
+                input#addSubscriptionText.entry(type="text" placeholder="Subscription")
+                input#addSubscriptionButton.button(type="submit" value="Add Subscription")
+
         script.
-            var page = { alert: "#{alert}" }
+            var page = {
+              board: "#{currentBoard.name}",
+              subscriptions: !{JSON.stringify(currentBoard.subscriptions)}
+            }
     else
         script.
             var page = {}

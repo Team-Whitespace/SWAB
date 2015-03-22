@@ -3,6 +3,7 @@ var passport = require('passport');
 var OpenIDStrategy = require('passport-openid');
 var router = express.Router();
 var User = require('../models/users');
+var passportConf = require('../config/passport');
 
 passport.serializeUser(function (user, done) {
   done(null, user._id);
@@ -16,8 +17,8 @@ passport.deserializeUser(function (id, done) {
 
 passport.use(new OpenIDStrategy.Strategy(
   {
-    returnURL: 'http://localhost:3000/auth/openid/return',
-    realm: 'http://localhost:3000',
+    returnURL: passportConf.host + '/auth/openid/return',
+    realm: passportConf.host,
     profile: true
   },
   function (identifier, profile, done) {

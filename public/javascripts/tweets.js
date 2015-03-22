@@ -1,35 +1,96 @@
 "use strict"
 
-var socket = io.connect(location.protocol + '//' + location.host);
-var paused = false;
-var content = document.getElementById('content');
+var socket                = io.connect(location.protocol + '//' + location.host);
+var content               = document.getElementById('content');
+var addBoardButton        = document.getElementById('boardNameSubmit');
+var addSubscriptionLink   = document.getElementById('addNewSubscription');
+var addSubscriptionButton = document.getElementById('addSubscriptionButton');
+var addSubscriptionText   = document.getElementById('addSubscriptionText');
 
-if (page.alert) getTweets(page.alert);
+if (page.board) init();
 
-document.getElementById("subButton").addEventListener("click", sentAlert);
-document.getElementById("togglePause").addEventListener("click", togglePauseTweets);
-
-function sentAlert() {
-  var text = document.getElementById('alertSub').value;
-  var alertList = document.getElementById('alertList');
-  socket.emit('addAlert', text);
-  alertList.insertAdjacentHTML('beforeend',
-    '<li>' +
-      '<a href="/' + encodeURIComponent(text) + '" >' + text + '</a>' +
-    '</li>'
-  );
+function init() {
+  page.subscriptions.forEach(function(subscription) {
+    addSubscription(subscription);
+  });
+  addEventListeners();
 }
 
-
-function getTweets(tweet) {
-  socket.emit('join', tweet);
-  socket.on(tweet, displayTweet);
+function addEventListeners() {
+  addBoardButton.addEventListener('click', addBoard);
+  addSubscriptionLink.addEventListener('click', toggleSubscriptionLightbox);
+  addSubscriptionButton.addEventListener('click', function(e) {
+    addSubscription(e);
+    toggleSubscriptionLightbox(e);
+  });
 }
 
-function displayTweet(data) {
+function toggleSubscriptionLightbox(e) {
+  var lightbox = document.getElementById('add-subscription-lightbox');
+  if (!lightbox.style.display || lightbox.style.display === 'none') {
+    lightbox.style.display = 'flex';
+  } else {
+    lightbox.style.display = 'none';
+  }
+
+  e.stopPropagation();
+  e.preventDefault();
+}
+
+function addBoard() {
+  var text = document.getElementById('boardNameText').value;
+  if (isValidBoardName(text)) {
+    var boardList = document.getElementById('boardList');
+    socket.emit('addBoard', text);
+    boardList.insertAdjacentHTML('beforeend',
+      '<li>' +
+        '<a href="/' + encodeURIComponent(text) + '" >' + text + '</a>' +
+      '</li>');
+  }
+}
+
+function addSubscription(subscription) {
+  var paused = false;
+
+  if (!subscription) {
+    var subscription = addSubscriptionText.value;
+    if (isValidSubscriptionName(subscription)) {
+      socket.emit('addSubscription', { board: page.board, subscription: subscription });
+    } else return;
+  }
+
+  content.insertAdjacentHTML('beforeend',
+    '<div draggable="true" class="pane" data-subscription="' + subscription + '">' +
+      '<div class="pane-head">' +
+        '<h2>' + subscription + '</h2>' +
+        '<a class="pause-subscription" href="#">Pause</a>' +
+        '<a class="delete-subscription" href="#">Delete</a>' +
+      '</div>' +
+      '<div class="tweet-container"></div>' +
+    '</div>');
+
+  var pane = content.querySelector('[data-subscription="' + subscription + '"]');
+  var pauseButton = pane.getElementsByClassName('pause-subscription')[0];
+  var deleteButton = pane.getElementsByClassName('delete-subscription')[0];
+  var tweetContainer = pane.getElementsByClassName('tweet-container')[0];
+
+  pauseButton.addEventListener('click', function(e) {
+    paused = !paused;
+    if (paused) pauseButton.innerHTML = "Play";
+    else pauseButton.innerHTML = "Pause";
+  });
+
+  socket.emit('join', subscription);
+
+  socket.on(subscription, function(data) {
+    if (!paused) displayTweet(data, tweetContainer, subscription);
+  });
+}
+
+function displayTweet(data, pane, subscription) {
   var count = 0;
   var match = data.matches.filter(function isCurrentAlert(obj) {
-    return obj.queryid === page.alert;
+    return obj.queryid === subscription;
   })[0];
 
   if (!match.positions) return;
@@ -39,7 +100,7 @@ function displayTweet(data) {
     data.tweet.text = insertString(data.tweet.text, "</mark>", position.endOffset);
   });
 
-  insertTweet(content, data);
+  insertTweet(pane, data);
 
   function insertString(str, part, index) {
     var result = str.slice(0, index + count) + part + str.slice(index + count);
@@ -48,11 +109,10 @@ function displayTweet(data) {
   }
 }
 
-function insertTweet(content, data) {
-  var style = '';
-  if (paused) style = ' style = "display: none"';
-  content.insertAdjacentHTML('afterbegin',
-    '<div' + style + ' class="tweet" id="tweet-' + data.tweet.id_str + '">' +
+function insertTweet(pane, data) {
+  if (pane.children.length >= 30) pane.removeChild(pane.children[pane.children.length - 1]);
+  pane.insertAdjacentHTML('afterbegin',
+    '<div class="tweet" id="tweet-' + data.tweet.id_str + '">' +
       '<div class="tweetContent">'+
         '<p>' + data.tweet.text + '</p>' +
         '<p>' + data.tweet.created_at + '</p>' +
@@ -71,20 +131,15 @@ function insertTweet(content, data) {
         '</div>' +
       '</div>' +
       '<div style="clear:both"></div>' +
-    '</div>'
-  );
+    '</div>');
 }
 
-function togglePauseTweets(e) {
-  paused = !paused;
+function isValidBoardName(board) {
+  return /^[a-zA-Z0-9 ]{2,15}$/.test(board)
+    && document.querySelector('[data-board="' + board + '"]') === null;
+}
 
-  if (!paused) {
-    var tweets = content.getElementsByClassName('tweet')
-      for (var i = 0; i < tweets.length; i++) {
-        tweets.item(i).style.display = 'block';
-      }
-  }
-
-  e.stopPropagation();
-  e.preventDefault();
+function isValidSubscriptionName(subscription) {
+  return /^([a-zA-Z0-9 \+\?\*\^\!\#]|\|\||&&){2,100}$/.test(subscription)
+    && document.querySelector('[data-subscription="' + subscription + '"]') === null;
 }

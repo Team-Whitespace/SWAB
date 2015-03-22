@@ -19,28 +19,60 @@ module.exports = function (io) {
         socket.join(room, onError);
     });
 
-    socket.on('addAlert', function onAddAlert(alert) {
-      matches.addAlert(alert, onAddMatchAlert);
+    socket.on('addBoard', function onAddBoard(board) {
+      var userID = socket.request.session.passport.user;
 
-      function onAddMatchAlert(err, data) {
-        if (err || socket.request.session.passport.user === undefined) failedToAddAlert(err);
-        else users.update({_id: socket.request.session.passport.user}, {$addToSet: {subscriptions: alert}}, onAddUserAlert);
+      if (userID) {
+        users.findById(userID, function(err, user) {
+          var alreadyExists = findOneArray(board, user.boards, 'name');
+          if (alreadyExists) {
+            //TODO
+          } else {
+            user.boards.push({ name: board });
+            user.save(onAddBoard);
+          }
+        });
+      }
+
+      function onAddBoard(err) {
+        if (err) {
+          console.log(err);
+          socket.emit('addedBoard', { board: board, success: false });
+        }
+        else socket.emit('addedBoard', { board: board, success: true });
+      }
+    });
+
+    socket.on('addSubscription', function onAddAlert(data) {
+      matches.addAlert(data.subscription, onAddMatchAlert);
+
+      function onAddMatchAlert(err, d) {
+        var userID = socket.request.session.passport.user;
+        if (err || userID === undefined) failedToAddAlert(err);
+        else users.findById(userID, function (err, user) {
+          if (err || !user) return;
+          var board = findOneArray(data.board, user.boards, 'name');
+          if (!board) return;
+          if (findOneArray(data.subscription, board.subscriptions)) return;
+          board.subscriptions.push(data.subscription);
+          user.save(onAddUserAlert);
+        });
       }
 
       function onAddUserAlert(err) {
         if (err) failedToAddAlert(err);
-        else socket.emit('addedAlert', alertMessage(alert, true));
+        else socket.emit('addedAlert', alertMessage(data.subscription, true));
       }
 
       function failedToAddAlert(err) {
         console.log(err);
-        socket.emit('addedAlert', alertMessage(alert, false));
+        socket.emit('addedAlert', alertMessage(data.subscription, false));
       }
 
-      function alertMessage(alert, success) {
+      function alertMessage(subscription, success) {
         return {
           success: success,
-          alert: alert
+          subscription: subscription
         }
       }
     });
@@ -48,5 +80,12 @@ module.exports = function (io) {
 
   function onError(err) {
     if (err) console.log(err);
+  }
+
+  function findOneArray(needle, haystack, field) {
+    return haystack.filter(function (straw) {
+      if (field) return straw[field].toUpperCase() == needle.toUpperCase();
+      else return straw.toUpperCase() == needle.toUpperCase();
+    })[0];
   }
 }
