@@ -1,11 +1,16 @@
-"use strict"
+(function () {
+
+'use strict'
 
 var socket                = io.connect(location.protocol + '//' + location.host);
-var content               = document.getElementById('content');
 var addBoardButton        = document.getElementById('boardNameSubmit');
-var addSubscriptionLink   = document.getElementById('addNewSubscription');
+var addBoardNameText      = document.getElementById('boardNameText');
 var addSubscriptionButton = document.getElementById('addSubscriptionButton');
+var addSubscriptionLink   = document.getElementById('addNewSubscription');
 var addSubscriptionText   = document.getElementById('addSubscriptionText');
+var boardList             = document.getElementById('boardList');
+var content               = document.getElementById('content');
+var lightbox              = document.getElementById('add-subscription-lightbox');
 
 if (page.board) init();
 
@@ -20,13 +25,12 @@ function addEventListeners() {
   addBoardButton.addEventListener('click', addBoard);
   addSubscriptionLink.addEventListener('click', toggleSubscriptionLightbox);
   addSubscriptionButton.addEventListener('click', function(e) {
-    addSubscription(e);
+    addSubscription();
     toggleSubscriptionLightbox(e);
   });
 }
 
 function toggleSubscriptionLightbox(e) {
-  var lightbox = document.getElementById('add-subscription-lightbox');
   if (!lightbox.style.display || lightbox.style.display === 'none') {
     lightbox.style.display = 'flex';
   } else {
@@ -38,9 +42,8 @@ function toggleSubscriptionLightbox(e) {
 }
 
 function addBoard() {
-  var text = document.getElementById('boardNameText').value;
+  var text = addBoardNameText.value;
   if (isValidBoardName(text)) {
-    var boardList = document.getElementById('boardList');
     socket.emit('addBoard', text);
     boardList.insertAdjacentHTML('beforeend',
       '<li>' +
@@ -51,11 +54,13 @@ function addBoard() {
 
 function addSubscription(subscription) {
   var paused = false;
-
   if (!subscription) {
     var subscription = addSubscriptionText.value;
     if (isValidSubscriptionName(subscription)) {
-      socket.emit('addSubscription', { board: page.board, subscription: subscription });
+      socket.emit('addSubscription', {
+        board: page.board,
+        subscription: subscription
+      });
     } else return;
   }
 
@@ -74,13 +79,21 @@ function addSubscription(subscription) {
   var deleteButton = pane.getElementsByClassName('delete-subscription')[0];
   var tweetContainer = pane.getElementsByClassName('tweet-container')[0];
 
+  socket.emit('join', subscription);
+
   pauseButton.addEventListener('click', function(e) {
     paused = !paused;
     if (paused) pauseButton.innerHTML = "Play";
     else pauseButton.innerHTML = "Pause";
   });
 
-  socket.emit('join', subscription);
+  deleteButton.addEventListener('click', function(e) {
+    socket.emit('deleteSubscription', {
+      board: page.board,
+      subscription: subscription
+    });
+    content.removeChild(pane);
+  });
 
   socket.on(subscription, function(data) {
     if (!paused) displayTweet(data, tweetContainer, subscription);
@@ -143,3 +156,5 @@ function isValidSubscriptionName(subscription) {
   return /^([a-zA-Z0-9 \+\?\*\^\!\#]|\|\||&&){2,100}$/.test(subscription)
     && document.querySelector('[data-subscription="' + subscription + '"]') === null;
 }
+
+})();

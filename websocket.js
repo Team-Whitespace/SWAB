@@ -76,6 +76,21 @@ module.exports = function (io) {
         }
       }
     });
+
+    socket.on('deleteSubscription', function onDeleteSubscription(data) {
+      var userID = socket.request.session.passport.user;
+      users.findById(userID, function (err, user) {
+        if (err || !user) return;
+        var board = findOneArray(data.board, user.boards, 'name');
+        if (!board) return;
+        for (var i = 0, len = board.subscriptions.length; i < len; i++) {
+          if (board.subscriptions[i] === data.subscription) {
+            board.subscriptions.splice(i, 1);
+          }
+        }
+        user.save();
+      });
+    });
   };
 
   function onError(err) {
