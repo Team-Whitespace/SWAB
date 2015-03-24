@@ -7,7 +7,7 @@ var router = express.Router();
 router.get(/^\/([a-zA-Z0-9%]*)$/, function(req, res, next) {
   res.render('index', {
     board: req.params[0],
-    user: req.user
+    user: req.user,
   });
 });
 
