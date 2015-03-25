@@ -99,11 +99,11 @@ function addSubscription(subscription) {
     subscription: subscription
   });
 
-  socket.on(subscription, function(data) {
+  socket.on(subscription, function (data) {
     if (data instanceof Array) {
-      data.forEach(function(inputTweet){
-        insertTweet(inputTweet, tweetContainer);
-      });
+      for (var i = data.length - 1; i >= 0; i -= 1) {
+        insertTweet(data[i], tweetContainer);
+      }
     } else if (!paused) displayTweet(data, tweetContainer, subscription);
   });
 }

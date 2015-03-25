@@ -2,7 +2,7 @@
 
 var matches = require('./models/matches.js');
 var users = require('./models/users.js');
-var solr = require('./models/tweets.js');
+var tweets = require('./models/tweets.js');
 
 module.exports = function (io) {
   matches.matches.on('message', onConsumerMessage);
@@ -94,7 +94,7 @@ module.exports = function (io) {
     });
 
     socket.on('getTweets', function onGetTweets(data) {
-      solr.search(data.subscription, function(docs) {
+      tweets.search(data.subscription, function(docs) {
         docs.forEach(function (inputTweet, index) {
           docs[index].tweet = JSON.parse(inputTweet.tweet);
         });
