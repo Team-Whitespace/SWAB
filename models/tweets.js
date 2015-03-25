@@ -18,12 +18,15 @@ function search(keyword, callback){
     wt: 'json',
     sort: 'created_at desc',
     start: 0,
-    rows: 50
+    rows: 50,
+    hl: true,
+    'hl.simple.pre': '<mark>',
+    'hl.simple.post': '</mark>'
   };
 
   var request = client.search(query, function (err, obj) {
     if (err) console.log(err);
-    else callback(obj.response.docs);
+    else callback(obj.response.docs, obj.highlighting);
   });
 
   request.setTimeout(500, function () {

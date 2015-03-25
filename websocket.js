@@ -94,9 +94,12 @@ module.exports = function (io) {
     });
 
     socket.on('getTweets', function onGetTweets(data) {
-      tweets.search(data.subscription, function(docs) {
+      tweets.search(data.subscription, function(docs, hl) {
         docs.forEach(function (inputTweet, index) {
           docs[index].tweet = JSON.parse(inputTweet.tweet);
+          if (hl[inputTweet.id_str].text[0]) {
+            docs[index].tweet.text = hl[inputTweet.id_str].text[0];
+          }
         });
         socket.emit(data.subscription, docs);
       });
