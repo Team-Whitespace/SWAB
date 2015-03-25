@@ -73,7 +73,57 @@ a {
 #sidebar {
     background: #333;
     height: 100%;
+    width: 300px;
+    float: left;
+    position: fixed;
+    display: flex;
+    flex-flow: column;
 }
+
+#sidebar #addBoard {
+    padding: 20px;
+    overflow: hidden;
+    float: left;
+    width: 300px;
+}
+
+#sidebar #addBoard #boardNameText {
+    float: left;
+    height: 32px;
+    border: 0;
+    padding: 0 10px;
+    border-right: 0;
+    width: 199px;
+    background: rgba(255,255,255,0.2);
+    color: #CCC;
+}
+
+#sidebar #addBoard #boardNameSubmit.button {
+   float: left;
+   overflow: hidden;
+   width: 40px;
+   font-size: 25px;
+   font-weight: bold;
+   padding: 0;
+}
+
+#sidebar ul {
+   overflow-y: auto;
+   flex: 2;
+}
+
+#sidebar #sidebar-foot {
+    padding: 20px;
+    color: #AAA;
+}
+
+#sidebar #sidebar-foot a {
+   display: block;
+   float: right;
+   width: 50px;
+   color: #56919B;
+}
+
 
 #sidebar li {
     padding: 5px 0;
@@ -86,6 +136,8 @@ a {
 
 #sidebar li a {
     color: #EEE;
+    display: block;
+    padding: 0 20px;
 }
 
 /*
@@ -123,8 +175,16 @@ input.entry[type=text] {
     justify-content: flex-start;
     overflow-x: scroll;
     overflow-y: hidden;
+    margin: 0 0 0 300px;
+    padding: 10px;
+    float: left;
 }
 
+#content #addSubContainer {
+   position: fixed;
+   bottom: 10px;
+   right: 10px;
+}
 
 /*
  * Board
@@ -138,22 +198,65 @@ input.entry[type=text] {
     border: solid 1px #E2E2E2;
     margin: 10px;
     overflow: hidden;
-    flex-shrink: 0;
+    display: flex;
+    flex-flow: column;
     font-size: 1rem;
 }
 
 .pane .pane-head {
     background: #F8F9FA;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .pane h2 {
     font-size: 1.4rem;
-    padding: 10px 20px;
-    display: inline-block;
+    padding: 10px;
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pane .pane-actions {
+}
+
+.pane .pane-action {
+    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: solid 1px #E2E2E2;
+    text-align: center;
+    margin-right: 10px;
+    background: -webkit-linear-gradient(top, #fefefe 0%,#efefef 100%);
+    background: linear-gradient(to bottom, #fefefe 0%,#efefef 100%);
+}
+
+.pane .pane-action span {
+    display: block;
+    height: 16px;
+    width: 16px;
+    background-size: contain;
+}
+
+.pane .pane-action .pause {
+    background-image: url('../images/pause.svg');
+}
+
+.pane .pane-action .delete {
+    background-image: url('../images/close.svg');
+}
+
+.pane .pane-action .play {
+    background-image: url('../images/play.svg');
 }
 
 .pane .tweet-container {
-    padding: 0 10px;
     overflow-y: auto;
     height: 100%;
 }
@@ -163,7 +266,7 @@ input.entry[type=text] {
  */
 
 .tweet {
-    margin-bottom: 10px;
+    padding: 10px;
     animation: fadein 2s;
     -webkit-animation: fadein 0.5s;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -174,7 +277,7 @@ input.entry[type=text] {
     background: #56919B;
     color: #FFF;i
     text-shadow: 0 1px rgba(0,0,0,0.4);
-    padding: 2px 6px;
+    padding: 1px 4px;
 }
 
 .tweet .tweetContent {
@@ -241,74 +344,7 @@ input.entry[type=text] {
 }
 
 @media (min-width: 800px) {
-    #sidebar {
-        width: 300px;
-        float: left;
-        position: fixed;
-        display: flex;
-        flex-flow: column;
-    }
 
-    #sidebar #addBoard {
-        padding: 20px;
-        overflow: hidden;
-        float: left;
-        width: 300px;
-    }
-
-    #sidebar #addBoard #boardNameText {
-        float: left;
-        height: 32px;
-        border: 0;
-        padding: 0 10px;
-        border-right: 0;
-        width: 199px;
-        background: rgba(255,255,255,0.2);
-        color: #CCC;
-    }
-
-    #sidebar #addBoard #boardNameSubmit.button {
-        float: left;
-        overflow: hidden;
-        width: 40px;
-        font-size: 25px;
-        font-weight: bold;
-        padding: 0;
-    }
-
-    #sidebar ul {
-        overflow-y: auto;
-        flex: 2;
-    }
-
-    #sidebar li a {
-        display: block;
-        padding: 0 20px;
-    }
-
-    #sidebar #sidebar-foot {
-        padding: 20px;
-        color: #AAA;
-    }
-
-    #sidebar #sidebar-foot a {
-        display: block;
-        float: right;
-        width: 50px;
-        color: #56919B;
-    }
-
-    #content {
-        margin: 0 0 0 300px;
-        padding: 10px;
-        float: left;
-    }
-
-    #content #addSubContainer {
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-    }
 }
 
 @keyframes fadein {

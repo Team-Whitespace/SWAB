@@ -68,8 +68,14 @@ function addSubscription(subscription) {
     '<div draggable="true" class="pane" data-subscription="' + subscription + '">' +
       '<div class="pane-head">' +
         '<h2>' + subscription + '</h2>' +
-        '<a class="pause-subscription" href="#">Pause</a>' +
-        '<a class="delete-subscription" href="#">Delete</a>' +
+        '<div class="pane-actions">' +
+          '<a class="pane-action pause-subscription" href="#">' +
+            '<span class="pause"></span>' +
+          '</a>' +
+          '<a class="pane-action delete-subscription" href="#">' +
+            '<span class="delete"></span>' +
+          '</a>' +
+        '</div>' +
       '</div>' +
       '<div class="tweet-container"></div>' +
     '</div>');
@@ -83,8 +89,8 @@ function addSubscription(subscription) {
 
   pauseButton.addEventListener('click', function(e) {
     paused = !paused;
-    if (paused) pauseButton.innerHTML = "Play";
-    else pauseButton.innerHTML = "Pause";
+    if (paused) pauseButton.innerHTML = '<span class="play"></div>';
+    else pauseButton.innerHTML = '<span class="pause"></div>';
   });
 
   deleteButton.addEventListener('click', function(e) {
