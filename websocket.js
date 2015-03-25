@@ -2,6 +2,7 @@
 
 var matches = require('./models/matches.js');
 var users = require('./models/users.js');
+var tweets = require('./models/tweets.js');
 
 module.exports = function (io) {
   matches.matches.on('message', onConsumerMessage);
@@ -91,6 +92,15 @@ module.exports = function (io) {
         user.save();
       });
     });
+
+    socket.on('getTweets', function onGetTweets(data) {
+      tweets.search(data.subscription, function(docs) {
+        docs.forEach(function (inputTweet, index) {
+          docs[index].tweet = JSON.parse(inputTweet.tweet);
+        });
+        socket.emit(data.subscription, docs);
+      });
+    })
   };
 
   function onError(err) {

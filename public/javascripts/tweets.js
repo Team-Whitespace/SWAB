@@ -95,13 +95,22 @@ function addSubscription(subscription) {
     content.removeChild(pane);
   });
 
-  socket.on(subscription, function(data) {
-    if (!paused) displayTweet(data, tweetContainer, subscription);
+  socket.emit('getTweets', {
+    subscription: subscription
+  });
+
+  socket.on(subscription, function (data) {
+    if (data instanceof Array) {
+      for (var i = data.length - 1; i >= 0; i -= 1) {
+        insertTweet(data[i], tweetContainer);
+      }
+    } else if (!paused) displayTweet(data, tweetContainer, subscription);
   });
 }
 
 function displayTweet(data, pane, subscription) {
   var count = 0;
+
   var match = data.matches.filter(function isCurrentAlert(obj) {
     return obj.queryid === subscription;
   })[0];
@@ -113,7 +122,7 @@ function displayTweet(data, pane, subscription) {
     data.tweet.text = insertString(data.tweet.text, "</mark>", position.endOffset);
   });
 
-  insertTweet(pane, data);
+  insertTweet(data, pane);
 
   function insertString(str, part, index) {
     var result = str.slice(0, index + count) + part + str.slice(index + count);
@@ -122,7 +131,7 @@ function displayTweet(data, pane, subscription) {
   }
 }
 
-function insertTweet(pane, data) {
+function insertTweet(data, pane) {
   if (pane.children.length >= 30) pane.removeChild(pane.children[pane.children.length - 1]);
   pane.insertAdjacentHTML('afterbegin',
     '<div class="tweet" id="tweet-' + data.tweet.id_str + '">' +
