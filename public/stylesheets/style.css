@@ -107,11 +107,6 @@ a {
    padding: 0;
 }
 
-#sidebar ul {
-   overflow-y: auto;
-   flex: 2;
-}
-
 #sidebar #sidebar-foot {
     padding: 20px;
     color: #AAA;
@@ -124,6 +119,11 @@ a {
    color: #56919B;
 }
 
+
+#sidebar ul {
+   overflow-y: auto;
+   flex: 2;
+}
 
 #sidebar li {
     padding: 5px 0;
@@ -138,6 +138,11 @@ a {
     color: #EEE;
     display: block;
     padding: 0 20px;
+}
+
+#sidebar ul.subscriptionList a {
+    color: #CCC;
+    padding-left: 40px;
 }
 
 /*
@@ -180,12 +185,6 @@ input.entry[type=text] {
     float: left;
 }
 
-#content #addSubContainer {
-   position: fixed;
-   bottom: 10px;
-   right: 10px;
-}
-
 /*
  * Board
  */
@@ -200,6 +199,7 @@ input.entry[type=text] {
     overflow: hidden;
     display: flex;
     flex-flow: column;
+    flex-shrink: 0;
     font-size: 1rem;
 }
 

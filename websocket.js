@@ -24,7 +24,7 @@ module.exports = function (io) {
       var userID = socket.request.session.passport.user;
 
       if (userID) {
-        users.findById(userID, function(err, user) {
+        users.findById(userID, function (err, user) {
           var alreadyExists = findOneArray(board, user.boards, 'name');
           if (alreadyExists) {
             //TODO
@@ -41,6 +41,17 @@ module.exports = function (io) {
           socket.emit('addedBoard', { board: board, success: false });
         }
         else socket.emit('addedBoard', { board: board, success: true });
+      }
+    });
+
+    socket.on('deleteBoard', function onDeleteBoard(data) {
+      var userID = socket.request.session.passport.user;
+
+      if (userID) {
+        users.findById(userID, function (err, user) {
+          user.boards.pull(findOneArray(data, user.boards, 'name'));
+          user.save();
+        });
       }
     });
 

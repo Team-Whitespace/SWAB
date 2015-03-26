@@ -10,9 +10,15 @@ var addSubscriptionLink   = document.getElementById('addNewSubscription');
 var addSubscriptionText   = document.getElementById('addSubscriptionText');
 var boardList             = document.getElementById('boardList');
 var content               = document.getElementById('content');
+var deleteBoardLink       = document.getElementById('deleteBoard');
 var lightbox              = document.getElementById('add-subscription-lightbox');
+var lightboxes            = document.getElementsByClassName("lightbox");
 
-if (page.board) init();
+if (page.board) {
+  init();
+} else {
+  addBoardButton.addEventListener('click', addBoard);
+}
 
 function init() {
   page.subscriptions.forEach(function(subscription) {
@@ -28,6 +34,18 @@ function addEventListeners() {
     addSubscription();
     toggleSubscriptionLightbox(e);
   });
+  deleteBoardLink.addEventListener('click', deleteBoard);
+  initLightbox();
+}
+
+function initLightbox() {
+  for (var i = 0, len = lightboxes.length; i < len; i++) {
+    var aLightbox = lightboxes[i];
+    aLightbox.addEventListener('click', function(e) {
+      if (aLightbox !== e.target) return;
+      aLightbox.style.display = 'none';
+    });
+  }
 }
 
 function toggleSubscriptionLightbox(e) {
@@ -50,6 +68,10 @@ function addBoard() {
         '<a href="/' + encodeURIComponent(text) + '" >' + text + '</a>' +
       '</li>');
   }
+}
+
+function deleteBoard() {
+  socket.emit('deleteBoard', page.board);
 }
 
 function addSubscription(subscription) {

@@ -18,6 +18,13 @@ block content
                     li(class= board === val.name ? "active" : "" data-board="#{val.name}")
                         a(href='/#{encodeURIComponent(val.name)}')= val.name
 
+                        if board === val.name
+                            ul.subscriptionList
+                                li
+                                    a#deleteBoard(href="#") Delete Board
+                                li
+                                    a#addNewSubscription(href="#") New Subscription&hellip;
+
             div#sidebar-foot
                 if user.firstname
                     | Hi #{user.firstname}!
@@ -33,9 +40,6 @@ block content
 
     if user && currentBoard
         div#content
-
-            div#addSubContainer
-                a.button#addNewSubscription(href="#") Add Subscription
 
         div#add-subscription-lightbox.lightbox
             div.lightbox-inner
